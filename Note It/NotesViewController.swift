@@ -7,17 +7,23 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
+import Realm
 
 class NotesViewController: UITableViewController {
     // MARK: - Properties
-    var notes = [NSManagedObject]()
+    var notes: Results<Note>?
+    var realm: Realm?
 
+    // MARK: ViewController methods.
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
+        // Set up our Realm.
+        realm = try! Realm()
+        
+        // Get all the notes.
+        notes = realm!.objects(Note)
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,19 +38,22 @@ class NotesViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        // Return number of objects.
+        return realm!.objects(Note).count
     }
 
-    /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
-
-        // Configure the cell...
-
+        let cell = tableView.dequeueReusableCellWithIdentifier("note", forIndexPath: indexPath)
+        
+        // Set up the cell with our data
+        if let note = notes?[indexPath.row] {
+            cell.textLabel!.text = note.name
+            cell.detailTextLabel!.text = dateToString(note.dateCreated)
+        }
+        
         return cell
     }
-    */
+    
 
     /*
     // Override to support conditional editing of the table view.
@@ -80,5 +89,14 @@ class NotesViewController: UITableViewController {
         return true
     }
     */
+    
+    // MARK: - Functions
+    func dateToString(date: NSDate) -> String {
+        let formatter = NSDateFormatter()
+        formatter.dateStyle = .ShortStyle
+        
+        return formatter.stringFromDate(date)
+        
+    }
 
 }

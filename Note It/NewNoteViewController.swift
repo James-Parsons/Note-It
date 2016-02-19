@@ -7,17 +7,22 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
+import Realm
 
 class NewNoteViewController: UIViewController {
     // MARK: - Properties
     var save: Bool?
+    var realm: Realm?
     
     // MARK: - Outlets
     @IBOutlet weak var txtView: UITextView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Initialize realm.
+        realm = try! Realm()
         
         // Set up insets.
         txtView.contentInset = UIEdgeInsetsMake(-50, 10, 0, 0)
@@ -69,6 +74,18 @@ class NewNoteViewController: UIViewController {
             let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action: UIAlertAction) -> Void in
                 // Don't serialize data.
                 self.save = false
+                
+                // Get the note name.
+                let name = alert.textFields!.first!.text!
+                
+                // Build the note.
+                let noteToSave = Note(name: name, content: textToSerialize, date: NSDate())
+                
+                // Save the note into Realm.
+                try! self.realm!.write {
+                    self.realm!.add(noteToSave)
+                }
+
                 
                 // Go back.
                 self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: nil)
