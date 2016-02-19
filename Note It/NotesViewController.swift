@@ -18,6 +18,11 @@ class NotesViewController: UITableViewController {
     // MARK: ViewController methods.
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Refresh the table.
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.tableView.reloadData()
+        })
 
         // Set up our Realm.
         realm = try! Realm()
