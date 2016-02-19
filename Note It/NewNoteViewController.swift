@@ -58,9 +58,6 @@ class NewNoteViewController: UIViewController {
     }
 
     @IBAction func btnSave(sender: UIBarButtonItem) {
-        // Make sure nothing is serialized.
-        save = true
-        
         var alert: UIAlertController
         
         if txtView.hasText() {
@@ -69,7 +66,13 @@ class NewNoteViewController: UIViewController {
             alert = UIAlertController(title: "Save", message: "Enter a name for this note", preferredStyle: .Alert)
             
             let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-            let saveAction = UIAlertAction(title: "Save", style: .Default, handler: nil)
+            let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action: UIAlertAction) -> Void in
+                // Don't serialize data.
+                self.save = false
+                
+                // Go back.
+                self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: nil)
+            })
             
             alert.addTextFieldWithConfigurationHandler {
                 (textField: UITextField) -> Void in
