@@ -52,6 +52,8 @@ class NewNoteViewController: UIViewController {
 
     // MARK: - Actions
     @IBAction func btnCancel(sender: UIBarButtonItem) {
+        // Save note content
+        save = true
         self.navigationController!.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
