@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  Note It
 //
-//  Created by Newton College and Career Academy on 2/19/16.
+//  Created by James Parsons on 2/19/16.
 //  Copyright © 2016 James Parsons. All rights reserved.
 //
 
@@ -16,7 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        // Set up status bar.
+        UIApplication.sharedApplication().statusBarStyle = .LightContent
+    
         return true
     }
 
