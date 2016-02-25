@@ -15,18 +15,4 @@ class Note: Object {
     dynamic var name = ""
     dynamic var content = ""
     dynamic var dateCreated = NSDate()
-    
-    // MARK: - Intializers
-    required init() {
-        super.init()
-    }
-    
-    required init(name: String, content: String, date: NSDate) {
-        self.name = name
-        self.content = content
-        self.dateCreated = date
-        
-        super.init()
-    }
-
 }

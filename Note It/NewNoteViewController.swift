@@ -72,9 +72,6 @@ class NewNoteViewController: UIViewController {
             
             let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
             let saveAction = UIAlertAction(title: "Save", style: .Default, handler: { (action: UIAlertAction) -> Void in
-                // DEBUG: See if this is firing.
-                // By the way it works.
-                print("Yay, it worked")
                 
                 // Don't serialize data.
                 self.save = false
@@ -83,7 +80,10 @@ class NewNoteViewController: UIViewController {
                 let name = alert.textFields!.first!.text!
                 
                 // Build the note.
-                let noteToSave = Note(name: name, content: textToSerialize, date: NSDate())
+                let noteToSave = Note()
+                noteToSave.name = name
+                noteToSave.content = textToSerialize
+                noteToSave.dateCreated = NSDate()
                 
                 // Save the note into Realm.
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in

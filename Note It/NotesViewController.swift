@@ -14,10 +14,12 @@ class NotesViewController: UITableViewController {
     // MARK: - Properties
     var notes: Results<Note>?
     var realm: Realm?
+    // Notification token
+    var token: NotificationToken?
+    var selectedNoteRow: Int?
 
     // MARK: ViewController methods.
     override func viewDidLoad() {
-        super.viewDidLoad()
         
         // Refresh the table.
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -29,6 +31,12 @@ class NotesViewController: UITableViewController {
         
         // Get all the notes.
         notes = realm!.objects(Note)
+        
+        token = notes!.addNotificationBlock({ (notification, realm) -> Void in
+            self.tableView.reloadData()
+        })
+        
+        super.viewDidLoad()
     }
 
     override func didReceiveMemoryWarning() {
@@ -52,14 +60,31 @@ class NotesViewController: UITableViewController {
         
         // Set up the cell with our data
         if let note = notes?[indexPath.row] {
-            cell.textLabel!.text = note.name
-            cell.detailTextLabel!.text = dateToString(note.dateCreated)
+            cell.textLabel?.text = note.name
+            cell.detailTextLabel?.text = dateToString(note.dateCreated)
         }
         
         return cell
     }
     
 
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.selectedNoteRow = indexPath.row
+        
+        self.performSegueWithIdentifier("noteDetail", sender: nil)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if (segue.identifier == "noteDetail") {
+            let controller = segue.destinationViewController as! NoteViewController
+            
+            let note = self.notes![self.selectedNoteRow!]
+            
+            controller.noteName = note.name
+            controller.noteContent = note.content
+        }
+    }
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -94,6 +119,13 @@ class NotesViewController: UITableViewController {
         return true
     }
     */
+    
+    // MARK: - Deinitializer
+    deinit {
+        if let t = token {
+            t.stop()
+        }
+    }
     
     // MARK: - Functions
     func dateToString(date: NSDate) -> String {
